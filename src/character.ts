@@ -392,7 +392,7 @@ export class Character {
         const filledWidth = Math.floor(barWidth * expPercent);
         
         for (let i = 0; i < barWidth; i++) {
-            grid[height - 2][10 + i] = i < filledWidth ? '█' : '░';
+            grid[height - 2][10 + i] = i < filledWidth ? '■' : '□';
         }
         
         const expNumbers = ` ${this._experience}/${this.maxExp === Infinity ? '∞' : this.maxExp}`;

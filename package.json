@@ -26,11 +26,15 @@
       },
       {
         "command": "keywarrior.status",
-        "title": "keyWerrior Status"
+        "title": "Show keyWerrior Status"
       },
       {
         "command": "keywarrior.reset",
         "title": "Reset keyWerrior"
+      },
+      {
+        "command": "keywarrior.attack",
+        "title": "Attack Monster (keyWerrior)"
       }
     ]
   },

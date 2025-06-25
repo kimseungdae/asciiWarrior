@@ -50,6 +50,7 @@ let processingUpdate = false;
 let outputChannelUri; // Track output channel URI
 let extensionContext;
 let renderInterval;
+let battleInterval; // For battle animations
 let needsRender = false;
 function activate(context) {
     // Store context globally
@@ -74,7 +75,18 @@ function activate(context) {
     const resetCommand = vscode.commands.registerCommand('keywarrior.reset', () => {
         resetKeyWerrior();
     });
-    context.subscriptions.push(startCommand, stopCommand, statusCommand, resetCommand);
+    // Add battle command
+    const attackCommand = vscode.commands.registerCommand('keywarrior.attack', () => {
+        if (character.inBattle) {
+            const damage = character.attack();
+            vscode.window.showInformationMessage(`⚔️ ${damage} 데미지를 입혔습니다!`);
+            needsRender = true;
+        }
+        else {
+            vscode.window.showInformationMessage('현재 전투 중이 아닙니다.');
+        }
+    });
+    context.subscriptions.push(startCommand, stopCommand, statusCommand, resetCommand, attackCommand);
     // Auto-start on activation
     startKeyWerrior();
 }
@@ -96,6 +108,8 @@ function startKeyWerrior() {
     console.log('🎨 Initial character render completed');
     // Start render interval (1 second)
     startRenderInterval();
+    // Start battle interval for animations (500ms)
+    startBattleInterval();
     // Shorter initialization delay
     setTimeout(() => {
         processingUpdate = false;
@@ -127,6 +141,8 @@ function stopKeyWerrior() {
     processingUpdate = true;
     // Stop render interval
     stopRenderInterval();
+    // Stop battle interval
+    stopBattleInterval();
     if (textDocumentListener) {
         textDocumentListener.dispose();
         textDocumentListener = undefined;
@@ -135,14 +151,16 @@ function stopKeyWerrior() {
     vscode.window.showInformationMessage('keyWerrior has been deactivated.');
 }
 function showStatus() {
-    const status = `
-🏆 keyWerrior Status:
-Level: ${character.level}
-Title: ${character.title}
-Experience: ${character.experience}/${character.maxExp}
-Combo: x${character.combo}
-`;
-    vscode.window.showInformationMessage(status);
+    var _a;
+    const statusMessage = `🗡️ keyWerrior 상태
+레벨: ${character.level} ${character.title}
+경험치: ${character.experience}/${character.maxExp === Infinity ? '∞' : character.maxExp}
+HP: ${character.hp}/${character.maxHp}
+MP: ${character.mp}/${character.maxMp}
+콤보: x${character.combo}
+${character.inBattle ? `⚔️ 전투 중: ${(_a = character.currentMonster) === null || _a === void 0 ? void 0 : _a.name}` : '🕊️ 평화로운 상태'}`;
+    vscode.window.showInformationMessage(statusMessage);
+    renderer.render(character);
 }
 function resetKeyWerrior() {
     processingUpdate = true;
@@ -315,6 +333,8 @@ function deactivate() {
     isActive = false;
     // Stop render interval
     stopRenderInterval();
+    // Stop battle interval
+    stopBattleInterval();
     if (textDocumentListener) {
         textDocumentListener.dispose();
     }
@@ -365,5 +385,24 @@ function stopRenderInterval() {
     if (renderInterval) {
         clearInterval(renderInterval);
         renderInterval = undefined;
+    }
+}
+// Battle interval functions for animations
+function startBattleInterval() {
+    if (battleInterval) {
+        clearInterval(battleInterval);
+    }
+    battleInterval = setInterval(() => {
+        if (isActive && character.inBattle) {
+            // Move character during battle
+            character.moveCharacter();
+            needsRender = true;
+        }
+    }, 500); // Battle animation every 500ms
+}
+function stopBattleInterval() {
+    if (battleInterval) {
+        clearInterval(battleInterval);
+        battleInterval = undefined;
     }
 }

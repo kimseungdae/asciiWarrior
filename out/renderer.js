@@ -179,10 +179,10 @@ class Renderer {
         frame += '─'.repeat(width) + '\n';
         for (let i = 1; i < height - 1; i++) {
             if (i === 2) {
-                frame += this.centerText('🎉 레벨업 🎉', width) + '\n';
+                frame += this.centerText('🎉 LEVEL UP! 🎉', width) + '\n';
             }
             else if (i === 3) {
-                frame += this.centerText(`레벨 ${oldLevel} → ${newLevel}`, width) + '\n';
+                frame += this.centerText(`Level ${oldLevel} → ${newLevel}`, width) + '\n';
             }
             else if (i === 4) {
                 frame += this.centerText('⚔️ ⭐ ⚔️', width) + '\n';

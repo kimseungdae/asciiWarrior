@@ -119,7 +119,7 @@ export class Renderer {
         // Compact header with sparkles using only horizontal lines
         const headerWidth = 60;
         output += '─'.repeat(headerWidth) + '\n';
-        output += this.centerText('✨🗡️ keyWerrior 레벨업! 🗡️✨', headerWidth) + '\n';
+        output += this.centerText('✨🗡️ 레벨업! 🗡️✨', headerWidth) + '\n';
         output += '─'.repeat(headerWidth) + '\n';
         output += this.centerText('🎉 축하합니다! 새로운 힘을 얻었습니다! 🎉', headerWidth) + '\n';
         output += '─'.repeat(headerWidth) + '\n\n';
@@ -164,9 +164,6 @@ export class Renderer {
     renderTypingEffect(character: Character): void {
         const grid = character.getAsciiArt();
         let output = this.createPlainTextOutput(grid, character);
-        
-        // Add typing indicator
-        output += `\n💻 타이핑 중... `;
         
         // Add animated dots
         const dots = ['', '.', '..', '...'];
